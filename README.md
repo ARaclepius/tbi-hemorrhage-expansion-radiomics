@@ -188,7 +188,7 @@ Please cite the paper and this repository (see [`CITATION.cff`](CITATION.cff)):
   title   = {CT radiomics improves prediction of hemorrhage expansion in moderate-to-severe
              traumatic brain injury: a prospective cohort study},
   author  = {Haghani, Amirreza and Arjipour, Mahdi and Ownagh, Farid},
-  journal = {[JOURNAL]},
+  journal = {[the manuscript is still under review]},
   year    = {2026}
 }
 ```
