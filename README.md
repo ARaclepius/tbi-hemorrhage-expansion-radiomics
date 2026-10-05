@@ -179,6 +179,7 @@ Single-centre cohort of 86 patients with 852 radiomic features (overfitting risk
 ## Citation
 
 Please cite the paper and this repository (see [`CITATION.cff`](CITATION.cff)):
+
 Haghani, A., Arjipour, M., & Ownagh, F. (2026). TBI hemorrhage-expansion prediction pipeline: PCA-based radiomic, clinical and combined models (Version v1.0.1) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.23166853
 
 
