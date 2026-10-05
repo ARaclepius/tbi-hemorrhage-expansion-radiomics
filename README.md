@@ -174,7 +174,7 @@ Library versions of each run are written to `results/run_metadata.json`. Small n
 
 ## Limitations
 
-Single-centre cohort of 86 patients with 852 radiomic features (overfitting risk despite PCA and cross-validation); internal validation only; no confidence intervals; one CV partition and seed; fixed, untuned hyper-parameters; semi-automatic, operator-dependent segmentation; CT acquisition differences can shift radiomic features. "Rebleeding" covers any new hemorrhage on follow-up imaging, including subarachnoid and intraparenchymal patterns, not only classic hematoma expansion. **This software is a research prototype, not a medical device, and must not be used for clinical decisions.**
+Single-centre cohort of 86 patients with 852 radiomic features (overfitting risk despite PCA and cross-validation); internal validation only; no confidence intervals; one CV partition and seed; fixed, untuned hyper-parameters; semi-automatic, operator-dependent segmentation; CT acquisition differences can shift radiomic features. **This software is a research prototype, not a medical device, and must not be used for clinical decisions.**
 
 ## Citation
 
