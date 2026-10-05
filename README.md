@@ -183,15 +183,7 @@ Single-centre cohort of 86 patients with 852 radiomic features (overfitting risk
 
 Please cite the paper and this repository (see [`CITATION.cff`](CITATION.cff)):
 
-```bibtex
-@article{haghani2026tbi,
-  title   = {CT radiomics improves prediction of hemorrhage expansion in moderate-to-severe
-             traumatic brain injury: a prospective cohort study},
-  author  = {Haghani, Amirreza and Arjipour, Mahdi and Ownagh, Farid},
-  journal = {[the manuscript is still under review]},
-  year    = {2026}
-}
-```
+
 
 ## License and contact
 
