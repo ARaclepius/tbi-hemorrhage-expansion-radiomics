@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper and this repository."
+type: software
+title: "TBI hemorrhage-expansion prediction pipeline: PCA-based radiomic, clinical and combined models"
+authors:
+  - family-names: "Haghani"
+    given-names: "Amirreza"
+  - family-names: "Arjipour"
+    given-names: "Mahdi"
+  - family-names: "Ownagh"
+    given-names: "Farid"
+version: 1.0.0
+date-released: 2026-10-02
+repository-code: "https://github.com/ARaclepius/tbi-hemorrhage-expansion-radiomics"
+url: "https://github.com/ARaclepius/tbi-hemorrhage-expansion-radiomics"
+keywords:
+  - traumatic brain injury
+  - TBI
+  - radiomics
+  - computed tomography
+  - hemorrhage expansion
+  - rebleeding
+  - machine learning
+  - medical imaging
