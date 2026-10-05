@@ -166,7 +166,7 @@ data/README.md             data availability and expected schema
 
 The de-identified dataset derives from identifiable clinical imaging and is governed by the data-protection policy of Hamadan University of Medical Sciences; it is **not included**. It is available from the corresponding author (Mahdi Arjipour) on reasonable request. The expected input format is described in [`data/README.md`](data/README.md), and the synthetic generator reproduces that schema so the code can be tested end to end. Aggregate results are in [`reference_results/`](reference_results/).
 
-**Ethics:** approved by the Ethics Committee of Hamadan University of Medical Sciences (IR.UMSHA.REC.1403.001); informed consent was obtained; data were anonymised before analysis.
+**Ethics:** approved by the Ethics Committee of Hamadan University of Medical Sciences (IR.UMSHA.REC.1404.612); informed consent was obtained; data were anonymised before analysis.
 
 ## Reproducibility
 
