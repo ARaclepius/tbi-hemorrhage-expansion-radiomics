@@ -14,12 +14,11 @@ date-released: 2026-10-02
 repository-code: "https://github.com/ARaclepius/tbi-hemorrhage-expansion-radiomics"
 url: "https://github.com/ARaclepius/tbi-hemorrhage-expansion-radiomics"
 keywords:
-
-traumatic brain injury
-TBI
-radiomics
-computed tomography
-hemorrhage expansion
-rebleeding
-machine learning
-medical imaging
+  - traumatic brain injury
+  - TBI
+  - radiomics
+  - computed tomography
+  - hemorrhage expansion
+  - rebleeding
+  - machine learning
+  - medical imaging
