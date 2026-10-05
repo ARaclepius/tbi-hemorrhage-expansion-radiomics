@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper and this repository."
+title: "TBI hemorrhage-expansion prediction pipeline: PCA-based radiomic, clinical and combined models"
+authors:
+  - family-names: "Haghani"
+    given-names: "Amirreza"
+  - family-names: "Arjipour"
+    given-names: "Mahdi"
+  - family-names: "Ownagh"
+    given-names: "Farid"
+version: 1.0.0
+date-released: 2026-10-02
+license: MIT
+repository-code: "https://github.com/[USERNAME]/tbi-rebleeding-ml"
+preferred-citation:
+  type: article
+  title: "CT radiomics improves prediction of hemorrhage expansion in moderate-to-severe traumatic brain injury: a prospective cohort study"
+  journal: "[JOURNAL]"
+  year: 2026
