@@ -195,6 +195,6 @@ Please cite the paper and this repository (see [`CITATION.cff`](CITATION.cff)):
 
 ## License and contact
 
-MIT License - see [`LICENSE`](LICENSE). Corresponding author: **Mahdi Arjipour, MD**, Faculty of Medicine, Hamadan University of Medical Sciences, Hamadan, Iran · [EMAIL]. Issues and pull requests are welcome.
+Developer: **Haghani , Amirreza, MD**, Faculty of Medicine, Hamadan University of Medical Sciences, Hamadan, Iran · [haghaniamirreza0@gmail.com]. Issues and pull requests are welcome.
 
 **Acknowledgements:** the neurosurgical and radiology teams at Besat Hospital. No external funding.
