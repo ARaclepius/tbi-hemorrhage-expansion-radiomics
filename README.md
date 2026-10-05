@@ -21,9 +21,6 @@
 
 After moderate-to-severe traumatic brain injury (TBI), intracranial hemorrhage can keep growing during the first hours, raising intracranial pressure and the risk of surgery and death. Existing bleeding-risk scores (HAS-BLED, HEMORR<sub>2</sub>HAGES, RIETE, ATRIA) were derived in other populations, ignore imaging and reach AUCs of only about 0.57-0.64.
 
-This repository holds the complete, reproducible machine-learning workflow for the study:
-
-> Haghani A, Arjipour M, Ownagh F. **CT radiomics improves prediction of hemorrhage expansion in moderate-to-severe traumatic brain injury: a prospective cohort study.** [JOURNAL], 2026.
 
 **Question:** do radiomic features from the admission CT predict rebleeding / hemorrhage expansion better than the clinical and laboratory data already available at admission?
 
@@ -119,8 +116,8 @@ Random seed 42 everywhere; the five folds are identical for every model. No hype
 ## Quick start
 
 ```bash
-git clone https://github.com/[USERNAME]/tbi-rebleeding-ml.git
-cd tbi-rebleeding-ml
+git clone https://github.com/ARaclepius/tbi-hemorrhage-expansion-radiomics.git
+cd tbi-hemorrhage-expansion-radiomics
 python -m venv .venv && source .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
