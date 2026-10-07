@@ -1,0 +1,13 @@
+Variable,P value
+Hypertension,0.088
+Degenerative brain disease,0.045
+Subarachnoid hemorrhage,0.696
+Contusion,0.120
+Epidural hemorrhage,0.227
+Subdural hemorrhage,0.581
+Intraparenchymal hemorrhage,<0.001
+Anemia at admission,0.171
+Thrombocytopenia at admission,0.828
+Prolonged prothrombin time,0.525
+Prolonged partial thromboplastin time,0.554
+Elevated creatinine,0.036
