@@ -8,8 +8,10 @@
 [![GitHub Actions](https://github.com/ARaclepius/tbi-hemorrhage-expansion-radiomics/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-pytest-success)](tests/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Version](https://img.shields.io/badge/version-v1.2.0-blue)](CHANGELOG.md)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23166853.svg)](https://doi.org/10.5281/zenodo.23166853)
 
-**[Study](#study-overview) · [What’s new in v2](#whats-new-in-v20) · [Results](#results-with-95-confidence-intervals) · [Pipeline](#analysis-pipeline) · [Run it](#quick-start) · [Outputs](#outputs) · [Data](#data-availability) · [Citation](#citation)
+**[Study](#study-overview) · [What’s new in v1.2.0](#whats-new-in-v120) · [Results](#results-with-95-confidence-intervals) · [Pipeline](#analysis-pipeline) · [Run it](#quick-start) · [Outputs](#outputs) · [Data](#data-availability) · [Citation](#citation)
 
 </div>
 
@@ -21,7 +23,7 @@ This research project evaluates whether admission-CT radiomic features, routine 
 
 The cohort used for the supplied reference run included **86 patients** (46 without expansion and 40 with expansion), with **107 radiomic features** and **28 clinical/laboratory features**. The patient-level CSV is not included because of privacy and ethics restrictions; see [Data availability](#data-availability).
 
-## What’s new in v2.0
+## What’s new in v1.2.0
 
 > The main update is a more complete and auditable evaluation workflow—not just a performance table. The new run reports uncertainty, formal paired model comparisons, and fold-wise feature-attribution outputs alongside the previous PCA-based modelling.
 
@@ -212,7 +214,9 @@ This is an internal cross-validation analysis of a small, single-centre cohort. 
 
 ## Citation
 
-Please cite the relevant manuscript and repository. Repository citation metadata is in [`CITATION.cff`](CITATION.cff). When publishing this updated code version, create/update the archived software release record so the DOI points to the exact version used.
+Please cite the manuscript and this software repository (see [`CITATION.cff`](CITATION.cff)). The existing DOI has been **preserved exactly as requested** in the badge, citation metadata, and reference below:
+
+Haghani, A., Arjipour, M., & Ownagh, F. (2026). *TBI hemorrhage-expansion prediction pipeline: PCA-based radiomic, clinical and combined models* (Version v1.2.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.23166853
 
 ## License and contact
 

@@ -164,5 +164,6 @@
     "shap": "0.52.0"
   },
   "runtime_seconds": 156.62,
-  "reference_artifacts_note": "Aggregate outputs only; per-patient OOF probabilities and case-level SHAP files omitted."
+  "reference_artifacts_note": "Aggregate outputs only; per-patient OOF probabilities and case-level SHAP files omitted.",
+  "pipeline_version": "1.2.0"
 }
