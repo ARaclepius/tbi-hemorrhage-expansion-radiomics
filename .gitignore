@@ -15,3 +15,7 @@ data/*
 # results are regenerated
 results/*
 !results/.gitkeep
+
+# Case-level prediction / explanation files can contain sensitive derived health data
+pooled_oof_predictions.csv
+mlp_shap_*_oof_attributions.csv

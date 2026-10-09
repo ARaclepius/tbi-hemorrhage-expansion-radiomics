@@ -1,15 +1,41 @@
-name: tests
-on: [push, pull_request]
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
 jobs:
-  smoke:
+  test-and-smoke:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: "3.11", cache: pip }
-      - run: pip install -r requirements.txt -r requirements-dev.txt
-      - run: pytest -q
-      - name: End-to-end run on synthetic data
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt -r requirements-dev.txt
+      - name: Unit tests
+        run: pytest -q
+      - name: Generate synthetic data
+        run: python scripts/make_synthetic_data.py --out data/synthetic_example.csv
+      - name: End-to-end CI smoke run
+        run: >-
+          python run_pipeline.py
+          --data data/synthetic_example.csv
+          --output results/ci
+          --bootstrap 100
+          --skip-shap
+      - name: Verify key outputs
         run: |
-          python scripts/make_synthetic_data.py --out data/synthetic_example.csv
-          python run_pipeline.py --data data/synthetic_example.csv --output results/ci
+          test -s results/ci/results_pca95_with_bootstrap_ci.csv
+          test -s results/ci/metric_bootstrap_cis_long.csv
+          test -s results/ci/delong_pairwise_all_models.csv
+          test -s results/ci/backmapped_feature_importance_mean_across_folds.csv
+          test -s results/ci/run_metadata.json

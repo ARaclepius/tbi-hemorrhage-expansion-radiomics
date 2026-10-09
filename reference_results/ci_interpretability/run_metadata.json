@@ -1,0 +1,168 @@
+{
+  "pipeline": "ARaclepius/tbi-hemorrhage-expansion-radiomics; single-cell Colab adaptation",
+  "dataset_path": "<protected patient-level CSV; not included>",
+  "output_dir": "reference_results/ci_interpretability",
+  "random_state": 42,
+  "n_splits": 5,
+  "pca_variance": 0.95,
+  "n_bootstrap": 2000,
+  "bootstrap_ci": "stratified percentile 95% CI over pooled OOF (y_true, probability) pairs",
+  "classification_threshold": 0.5,
+  "feature_sets": {
+    "Radiomics": 107,
+    "Clinical": 28,
+    "Combined": 135
+  },
+  "n_patients": 86,
+  "class_counts": {
+    "0": 46,
+    "1": 40
+  },
+  "n_rows_removed_missing_target": 0,
+  "target_column_used": "rebleeding",
+  "dropped_columns": [
+    "patient_name",
+    "Timestamp",
+    "Patient",
+    "patient ID",
+    "Rebleeding on control CT scans",
+    "type of hemorrhage",
+    "lenght of hospitalization(days) in icu",
+    "surgery",
+    "outcome"
+  ],
+  "conversion_report": [],
+  "pca_components_per_fold": {
+    "Radiomics|Random Forest": [
+      15,
+      15,
+      15,
+      16,
+      15
+    ],
+    "Radiomics|Gradient Boosting": [
+      15,
+      15,
+      15,
+      16,
+      15
+    ],
+    "Radiomics|XGBoost": [
+      15,
+      15,
+      15,
+      16,
+      15
+    ],
+    "Radiomics|MLP": [
+      15,
+      15,
+      15,
+      16,
+      15
+    ],
+    "Clinical|Random Forest": [
+      18,
+      19,
+      19,
+      19,
+      19
+    ],
+    "Clinical|Gradient Boosting": [
+      18,
+      19,
+      19,
+      19,
+      19
+    ],
+    "Clinical|XGBoost": [
+      18,
+      19,
+      19,
+      19,
+      19
+    ],
+    "Clinical|MLP": [
+      18,
+      19,
+      19,
+      19,
+      19
+    ],
+    "Combined|Random Forest": [
+      27,
+      27,
+      27,
+      27,
+      27
+    ],
+    "Combined|Gradient Boosting": [
+      27,
+      27,
+      27,
+      27,
+      27
+    ],
+    "Combined|XGBoost": [
+      27,
+      27,
+      27,
+      27,
+      27
+    ],
+    "Combined|MLP": [
+      27,
+      27,
+      27,
+      27,
+      27
+    ]
+  },
+  "models": {
+    "Random Forest": {
+      "n_estimators": 100
+    },
+    "Gradient Boosting": {
+      "n_estimators": 100,
+      "learning_rate": 0.1,
+      "max_depth": 3
+    },
+    "XGBoost": {
+      "n_estimators": 100,
+      "learning_rate": 0.1,
+      "max_depth": 3,
+      "subsample": 0.8,
+      "colsample_bytree": 0.8
+    },
+    "MLP": {
+      "hidden_layer_sizes": [
+        100
+      ],
+      "max_iter": 1000
+    }
+  },
+  "statistical_comparisons": {
+    "method": "Paired DeLong test for correlated ROC AUCs using pooled out-of-fold probabilities",
+    "scope": "All 66 pairwise comparisons among 12 model x feature-set configurations",
+    "multiple_testing": "Holm family-wise error correction across all 66 comparisons, plus focused Holm corrections within each feature set (model comparisons) and within each model (feature-set comparisons)",
+    "alpha": 0.05,
+    "caveat": "Standard DeLong p-values are approximate for pooled OOF predictions because fitted models across CV folds use overlapping training sets; interpret as internal, exploratory comparisons, not external validation."
+  },
+  "interpretability": {
+    "tree_models": "native PCA-space feature_importances_ allocated to source features by absolute PCA-loading proportions; then grouped over one-hot categories",
+    "mlp": "Kernel SHAP in PCA space on each held-out fold; attribution is approximately back-projected to source variables with absolute PCA loadings",
+    "shap_kernel_l1_reg": "num_features(15)",
+    "warning": "Back-projected attributions are approximate and should not be described as exact raw-feature SHAP values."
+  },
+  "versions": {
+    "python": "3.13.16",
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "scikit_learn": "1.6.1",
+    "imbalanced_learn": "0.14.2",
+    "xgboost": "3.4.1",
+    "shap": "0.52.0"
+  },
+  "runtime_seconds": 156.62,
+  "reference_artifacts_note": "Aggregate outputs only; per-patient OOF probabilities and case-level SHAP files omitted."
+}

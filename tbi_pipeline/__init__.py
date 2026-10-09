@@ -1,2 +1,2 @@
-"""TBI hemorrhage-expansion / rebleeding ML pipeline."""
-__version__ = "1.0.0"
+"""TBI hemorrhage-expansion / rebleeding machine-learning utilities."""
+__version__ = "2.0.0"

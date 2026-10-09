@@ -1,6 +1,6 @@
 # Data availability
 
-The clinical dataset (`TBI_final.csv`, n = 86 patients: 40 expansion, 46 no expansion) contains patient-level
+The clinical dataset (`TBI_final_corrected.csv` (or a compatible CSV), n = 86 patients: 40 expansion, 46 no expansion) contains patient-level
 information and **is not distributed in this repository**
 (ethics approval / privacy restrictions).
 
@@ -23,7 +23,7 @@ automatically.
 
 ## Synthetic example
 
-`python scripts/make_synthetic_data.py` creates `data/synthetic_example.csv`
+`python scripts/make_synthetic_data.py --out data/synthetic_example.csv` creates `data/synthetic_example.csv`
 (no real patient information) so the pipeline can be run and tested end to end.
 Metrics on it are meaningless.
 
@@ -35,3 +35,8 @@ Metrics on it are meaningless.
 - Text columns that are >= 80% numeric are converted; entries that cannot be
   parsed (e.g. `5..84`) become missing and are median-imputed inside each
   training fold. Repair such entries upstream if you want them recovered.
+
+
+## Enhanced evaluation outputs
+
+The current command-line runner also writes stratified-bootstrap 95% confidence intervals, paired DeLong comparisons with Holm correction, fold-averaged source-feature importance and (unless `--skip-shap` is supplied) MLP Kernel SHAP outputs. Per-patient predictions and per-case attributions should stay in an approved local environment and must not be committed to the public repository.

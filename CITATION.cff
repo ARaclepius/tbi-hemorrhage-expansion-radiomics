@@ -9,8 +9,7 @@ authors:
     given-names: "Mahdi"
   - family-names: "Ownagh"
     given-names: "Farid"
-version: 1.0.1
-date-released: 2026-10-02
+version: 2.0.0
 doi: "10.5281/zenodo.23166853"
 repository-code: "https://github.com/ARaclepius/tbi-hemorrhage-expansion-radiomics"
 url: "https://github.com/ARaclepius/tbi-hemorrhage-expansion-radiomics"

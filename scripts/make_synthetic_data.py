@@ -35,5 +35,7 @@ if __name__ == "__main__":
     ap.add_argument("--out", default="data/synthetic_example.csv")
     ap.add_argument("--seed", type=int, default=0)
     a = ap.parse_args()
+    from pathlib import Path
+    Path(a.out).parent.mkdir(parents=True, exist_ok=True)
     make(seed=a.seed).to_csv(a.out, index=False)
     print("wrote", a.out)

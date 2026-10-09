@@ -1,192 +1,219 @@
 <div align="center">
 
-<img src="assets/banner.svg" alt="CT Radiomics for Predicting Hemorrhage Expansion in TBI - PCA-based machine-learning pipeline" width="100%">
+<img src="assets/banner.svg" alt="CT radiomics for TBI hemorrhage-expansion prediction with confidence intervals and interpretable machine learning" width="100%">
 
 <br>
 
-[![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)](requirements.txt)
-[![scikit-learn](https://img.shields.io/badge/scikit--learn-pipeline-F7931E?logo=scikitlearn&logoColor=white)](tbi_pipeline/pipeline.py)
-[![XGBoost](https://img.shields.io/badge/XGBoost-supported-189AB4)](tbi_pipeline/pipeline.py)
-[![Tests](https://github.com/ARaclepius/tbi-hemorrhage-expansion-radiomics/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](requirements.txt)
+[![GitHub Actions](https://github.com/ARaclepius/tbi-hemorrhage-expansion-radiomics/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-pytest-success)](tests/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23166853.svg)](https://doi.org/10.5281/zenodo.23166853)
 
-**[Overview](#overview) · [Results](#results) · [Pipeline](#pipeline) · [Quick start](#quick-start) · [Data](#data-availability) · [Cite](#citation)**
+**[Study](#study-overview) · [What’s new in v2](#whats-new-in-v20) · [Results](#results-with-95-confidence-intervals) · [Pipeline](#analysis-pipeline) · [Run it](#quick-start) · [Outputs](#outputs) · [Data](#data-availability) · [Citation](#citation)
 
 </div>
 
 ---
 
-## Overview
+## Study overview
 
-After moderate-to-severe traumatic brain injury (TBI), intracranial hemorrhage can keep growing during the first hours, raising intracranial pressure and the risk of surgery and death. Existing bleeding-risk scores (HAS-BLED, HEMORR<sub>2</sub>HAGES, RIETE, ATRIA) were derived in other populations, ignore imaging and reach AUCs of only about 0.57-0.64.
+This research project evaluates whether admission-CT radiomic features, routine clinical/laboratory variables, or their combination can predict rebleeding / hemorrhage expansion after moderate-to-severe traumatic brain injury (TBI). It compares three feature sets—**Radiomics**, **Clinical**, and **Combined**—with four classifiers: Random Forest, Gradient Boosting, XGBoost, and a multilayer perceptron (MLP).
 
+The cohort used for the supplied reference run included **86 patients** (46 without expansion and 40 with expansion), with **107 radiomic features** and **28 clinical/laboratory features**. The patient-level CSV is not included because of privacy and ethics restrictions; see [Data availability](#data-availability).
 
-**Question:** do radiomic features from the admission CT predict rebleeding / hemorrhage expansion better than the clinical and laboratory data already available at admission?
+## What’s new in v2.0
 
-**Answer in this cohort:** yes. A PCA-based radiomic multilayer perceptron reached an out-of-fold **AUC of 0.839** (accuracy 80.2%, sensitivity 82.5%, specificity 78.3%), versus an AUC of 0.680 for the best clinical model. Adding clinical variables to radiomics did not improve the best model (Combined MLP, AUC 0.836) but did help the tree ensembles.
+> The main update is a more complete and auditable evaluation workflow—not just a performance table. The new run reports uncertainty, formal paired model comparisons, and fold-wise feature-attribution outputs alongside the previous PCA-based modelling.
 
-### Study at a glance
-
-| | |
+| Area | New or expanded capability |
 |---|---|
-| **Design** | Prospective single-centre cohort, Besat Hospital, Hamadan, Iran (2023-2024) |
-| **Cohort** | 147 screened → 42 excluded (missing data, age < 18, mild injury, immediate surgery) → 19 excluded (inadequate image quality) → **86 analysed** |
-| **Outcome** | Rebleeding / hemorrhage expansion on follow-up CT (6 h and 24 h after the initial scan) |
-| **Imaging features** | 107 PyRadiomics *original* features (14 shape, 18 first-order, 75 texture) from semi-automatic hemorrhage segmentation in 3D Slicer (HU 40-80, closing smoothing, manual refinement under neurosurgical supervision) |
-| **Clinical features** | 28 variables: age, sex, hypertension, degenerative brain disease, admission GCS, blood counts, coagulation and renal laboratory values, derived abnormality flags (anemia, leukocytosis, thrombocytopenia, prolonged PT/PTT/INR, kidney failure) and baseline hemorrhage-type indicators |
-| **Feature sets** | Radiomics · Clinical / laboratory · Combined |
-| **Dimensionality reduction** | PCA retaining 95% of variance (mean 15.2 / 18.8 / 27.0 components) |
-| **Classifiers** | Random Forest · Gradient Boosting · XGBoost · MLP |
-| **Validation** | 5-fold stratified CV, pooled out-of-fold predictions → **12 PCA models** |
+| **Uncertainty estimates** | Stratified percentile-bootstrap **95% confidence intervals** for AUC, PR-AUC / average precision, accuracy, sensitivity, specificity, PPV, NPV, F1, and balanced accuracy, calculated from pooled out-of-fold (OOF) predictions. |
+| **Model comparison** | Paired **DeLong AUC tests** for all 66 pairwise comparisons among the 12 model/feature-set configurations, with Holm multiple-testing correction globally and for focused comparison families. |
+| **Interpretable ML** | Fold-wise source-feature importance for Random Forest, Gradient Boosting, and XGBoost, mapped from PCA-component importance back to original columns and averaged across folds. |
+| **MLP explanations** | Kernel SHAP is computed in each held-out fold’s PCA space using a background sampled from that fold’s training data; attributions are also saved in PCA space and approximately back-projected to original features. |
+| **Reproducibility** | Run metadata records class counts, excluded columns, detected feature-set sizes, PCA component counts, seeds, dependency versions, bootstrap settings, and the attribution method/caveats. |
+| **Automated checks** | GitHub Actions installs dependencies, runs unit tests, executes an end-to-end synthetic-data smoke run, and checks that key results files were created. |
+| **Colab + CLI** | Retains the supplied one-cell Colab notebook and adds a command-line entry point (`run_pipeline.py`) for local use and continuous integration. |
 
-## Results
+**Important interpretability caveat:** tree importances originate in PCA space. Mapping them to original features using absolute PCA loadings is an allocation-based approximation, not a direct raw-feature importance calculation. The MLP SHAP values are also computed in PCA space; their back-projection is explicitly **approximate and is not exact SHAP for the original raw features**. Do not present those values as exact native-feature SHAP explanations.
+
+## Results with 95% confidence intervals
+
+The table below comes from the supplied run on the 86-patient cohort (`reference_results/ci_interpretability/results_pca95_with_bootstrap_ci.csv`). AUC is shown as a point estimate with its **stratified-bootstrap 95% CI**. Confidence intervals describe resampling uncertainty conditional on the pooled OOF predictions; they do not replace external validation.
 
 <div align="center">
-<img src="assets/auc_summary.png" alt="Pooled out-of-fold AUC of the 12 PCA-based models" width="90%">
+<img src="assets/AUC_95CI_summary.png" alt="AUC estimates and stratified-bootstrap 95% confidence intervals for all 12 models" width="92%">
 </div>
 
-### Out-of-fold performance of all 12 PCA models (%, AUC as 0-1)
+| Feature set | Model | OOF AUC (95% CI) |
+|---|---|---:|
+| Radiomics | Random Forest | 0.752 (0.644–0.848) |
+| Radiomics | Gradient Boosting | 0.690 (0.570–0.799) |
+| Radiomics | XGBoost | 0.732 (0.625–0.838) |
+| **Radiomics** | **MLP** | **0.839 (0.744–0.921)** |
+| Clinical | Random Forest | 0.655 (0.526–0.768) |
+| Clinical | Gradient Boosting | 0.618 (0.498–0.743) |
+| Clinical | XGBoost | 0.680 (0.559–0.790) |
+| Clinical | MLP | 0.589 (0.466–0.708) |
+| Combined | Random Forest | 0.799 (0.699–0.884) |
+| Combined | Gradient Boosting | 0.753 (0.640–0.852) |
+| Combined | XGBoost | 0.747 (0.641–0.847) |
+| Combined | MLP | 0.836 (0.737–0.916) |
 
-| Feature set | Model | AUC | PR-AUC | Accuracy | Sens. | Spec. | PPV | NPV | F1 | Bal. acc. |
-|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| Radiomics | Random Forest | 0.752 | 70.5 | 70.9 | 72.5 | 69.6 | 67.4 | 74.4 | 69.9 | 71.0 |
-| Radiomics | Gradient Boosting | 0.690 | 65.6 | 67.4 | 75.0 | 60.9 | 62.5 | 73.7 | 68.2 | 67.9 |
-| Radiomics | XGBoost | 0.732 | 70.1 | 69.8 | 67.5 | 71.7 | 67.5 | 71.7 | 67.5 | 69.6 |
-| Radiomics | MLP | **0.839** | **79.2** | **80.2** | **82.5** | 78.3 | 76.7 | **83.7** | **79.5** | **80.4** |
-| Clinical / lab | Random Forest | 0.655 | 62.4 | 66.3 | 62.5 | 69.6 | 64.1 | 68.1 | 63.3 | 66.0 |
-| Clinical / lab | Gradient Boosting | 0.618 | 58.6 | 59.3 | 57.5 | 60.9 | 56.1 | 62.2 | 56.8 | 59.2 |
-| Clinical / lab | XGBoost | 0.680 | 64.5 | 66.3 | 60.0 | 71.7 | 64.9 | 67.3 | 62.3 | 65.9 |
-| Clinical / lab | MLP | 0.589 | 53.5 | 57.0 | 57.5 | 56.5 | 53.5 | 60.5 | 55.4 | 57.0 |
-| Combined | Random Forest | 0.799 | 74.4 | 74.4 | 70.0 | 78.3 | 73.7 | 75.0 | 71.8 | 74.1 |
-| Combined | Gradient Boosting | 0.753 | 71.8 | 73.3 | 75.0 | 71.7 | 69.8 | 76.7 | 72.3 | 73.4 |
-| Combined | XGBoost | 0.747 | 68.2 | 67.4 | 72.5 | 63.0 | 63.0 | 72.5 | 67.4 | 67.8 |
-| Combined | MLP | 0.836 | 78.7 | 79.1 | 77.5 | **80.4** | **77.5** | 80.4 | 77.5 | 79.0 |
+### Interpretation of the supplied results
 
-*Source: [`reference_results/`](reference_results/) (model results, tables and confusion matrices). Bold = best value in each column. Sens. = sensitivity, Spec. = specificity.*
+- The **Radiomics MLP** had the highest AUC point estimate: **0.839 (95% CI 0.744–0.921)**.
+- The best Clinical model by AUC was **XGBoost: 0.680 (0.559–0.790)**.
+- The Combined MLP was similar to Radiomics MLP in point estimate: **0.836 (0.737–0.916)**. The intervals are broad and overlap, so these point estimates alone do not establish that one model is statistically superior.
+- The DeLong CSVs provide paired AUC differences, unadjusted p-values, and Holm-adjusted p-values. Interpret these tests as exploratory: the standard DeLong test is applied to pooled OOF predictions, and cross-validation training sets overlap.
 
-**Main findings**
-
-- **Imaging outperforms routine data.** The best radiomics model (MLP, AUC 0.839, accuracy 80.2%) beat the best clinical model (XGBoost, AUC 0.680, accuracy 66.3%) by about 0.16 AUC. The clinical MLP performed close to chance (AUC 0.589).
-- **Clinical data add little on top of radiomics.** The best Combined model (MLP, AUC 0.836, accuracy 79.1%) matched, but did not exceed, radiomics alone. Combining feature sets did improve the tree ensembles (Random Forest 0.752 → 0.799, Gradient Boosting 0.690 → 0.753, XGBoost 0.732 → 0.747).
-- **The MLP was the strongest classifier on imaging-based feature sets;** tree ensembles reached AUC 0.69-0.80.
-
-<details>
-<summary><b>Univariate chi-square results</b></summary>
-
-<br>
-
-| Outcome | Variables with P < 0.05 |
-|---|---|
-| Rebleeding / hemorrhage expansion | Intraparenchymal hemorrhage (P < 0.001) |
-| Need for surgery | Epidural hemorrhage (P = 0.005) · Subarachnoid hemorrhage (P = 0.045) |
-| In-hospital mortality | Intraparenchymal hemorrhage (P < 0.001) · Elevated creatinine (P = 0.036) |
-
-Degenerative brain disease also reached P = 0.045 for mortality but is present in only 2.3% of patients (sparse cells) and is treated as unstable. Tests are two-sided Pearson chi-square, unadjusted for multiple comparisons, and therefore exploratory. Full tables: [`reference_results/supplementary_statistics/`](reference_results/supplementary_statistics/). Intraparenchymal hemorrhage was the only baseline variable associated with rebleeding.
-
-</details>
-
-> **Interpretation.** With 86 patients, a single CV partition and a single seed, differences of a few AUC points are within noise and no confidence intervals were estimated. This is internal validation only; external validation is required before any clinical use.
-
-## Pipeline
+Fold-averaged interpretability output is illustrated below. The MLP figure is a summary of **back-projected approximate** SHAP attributions, not exact raw-feature SHAP.
 
 <div align="center">
-<img src="assets/pipeline.svg" alt="Pipeline: CT radiomics and clinical variables form three feature sets; inside each training fold the data are preprocessed, oversampled, reduced by PCA (95% variance) and classified; pooled out-of-fold predictions are evaluated." width="100%">
+<img src="assets/FI_radiomics_mlp_top20.png" alt="Top radiomics features ranked by fold-averaged back-mapped MLP attribution" width="88%">
 </div>
 
-All preprocessing lives in **one `imblearn.Pipeline`** that is fitted on each training fold only:
+<div align="center">
+<img src="assets/SHAP_MLP_radiomics_backmapped_summary.png" alt="Radiomics MLP SHAP summary in original feature names using approximate PCA-loading back-projection" width="88%">
+</div>
 
-1. **Preprocess** - median imputation and z-scoring of numeric columns; mode imputation, one-hot encoding and scaling of categorical columns.
-2. **Oversample** - `RandomOverSampler` balances the classes in the training data only.
-3. **PCA** - retains 95% of the variance.
-4. **Classifier** - one of four models with the fixed settings below.
+The associated aggregate tables and figures are retained in [`reference_results/ci_interpretability/`](reference_results/ci_interpretability/). Per-patient OOF predictions and case-level SHAP records are intentionally **not** bundled in the reference outputs.
 
-The validation fold is only transformed and scored, so it never influences imputation, scaling, encoding, oversampling or PCA. Predictions from the five folds are pooled and metrics are computed once (threshold 0.5).
+## Analysis pipeline
 
-| Model | Settings |
+<div align="center">
+<img src="assets/pipeline.svg" alt="Updated evaluation pipeline showing preprocessing and PCA within each training fold, pooled OOF confidence intervals and model comparisons, fold-averaged feature attribution, and approximate back-projected MLP SHAP" width="100%">
+</div>
+
+For every feature set and classifier, the workflow uses five-fold stratified cross-validation with the same patient splits and seed. All learned preprocessing occurs on training folds only:
+
+1. **Clean the cohort.** Identify the `rebleeding` target (case-insensitive), normalize binary labels, remove rows with missing target, drop identifiers and post-baseline/leakage-prone columns, remove all-missing/constant columns, and convert string columns that are at least 80% numeric.
+2. **Build three feature sets.** Detect radiomic columns using the naming rules in the code; all other eligible baseline variables are assigned to Clinical. Combined contains all eligible columns.
+3. **Fit within each training fold.** Median imputation and standardization for numeric columns; most-frequent imputation, one-hot encoding and standardization for categorical columns; random oversampling; PCA retaining 95% variance; then one of the four classifiers. The validation fold is transformed and scored, never used to fit those steps.
+4. **Pool out-of-fold predictions.** Each patient receives one held-out prediction per model/feature-set configuration. Point metrics use a fixed probability threshold of 0.5 for threshold-dependent metrics.
+5. **Quantify uncertainty.** Resample positive and negative cases separately, preserving their original class counts, and calculate percentile 95% intervals for the nine reported metrics.
+6. **Compare configurations.** Run paired DeLong AUC comparisons for the 12 configurations (66 pairs) and apply Holm adjustment for multiple testing.
+7. **Interpret the models.** Estimate feature importance on fold-fitted models. For MLP, run Kernel SHAP in PCA space using only training-fold background cases, then save both PCA-space values and a clearly labelled approximate back-projection to original feature columns.
+
+### Model settings
+
+| Model | Fixed settings |
 |---|---|
 | Random Forest | 100 trees |
 | Gradient Boosting | 100 estimators, learning rate 0.1, max depth 3 |
-| XGBoost | 100 estimators, learning rate 0.1, max depth 3, subsample 0.8, colsample 0.8 |
-| MLP | one hidden layer of 100 units, max 1000 iterations |
+| XGBoost | 100 estimators, learning rate 0.1, max depth 3, subsample 0.8, column subsampling 0.8 |
+| MLP | One hidden layer with 100 units, maximum 1,000 iterations |
 
-Random seed 42 everywhere; the five folds are identical for every model. No hyper-parameter tuning was performed.
+Random state is 42 by default; PCA retains 95% of variance; the default bootstrap uses 2,000 replicates; Kernel SHAP defaults to a 10-case training-fold background and 100 samples per explained case. These settings can be changed from the CLI.
 
 ## Quick start
+
+### 1. Install
 
 ```bash
 git clone https://github.com/ARaclepius/tbi-hemorrhage-expansion-radiomics.git
 cd tbi-hemorrhage-expansion-radiomics
-python -m venv .venv && source .venv/bin/activate      # Windows: .venv\Scripts\activate
+python -m venv .venv
+# macOS / Linux
+source .venv/bin/activate
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Try it in a minute on **synthetic data** (no patient data; metrics are meaningless):
+### 2. Run the full pipeline on the approved patient dataset
+
+Place the authorized cohort CSV somewhere local; it is not distributed with this repository. The file must contain a `rebleeding` target column and the expected baseline radiomic/clinical columns.
 
 ```bash
-python scripts/make_synthetic_data.py
-python run_pipeline.py --data data/synthetic_example.csv --output results/demo
+python run_pipeline.py \
+  --data /path/to/TBI_final_corrected.csv \
+  --output results/full_run
 ```
 
-Run on the real cohort (see [Data availability](#data-availability)):
+This runs all 12 PCA models, 2,000 bootstrap replicates per configuration, paired DeLong comparisons, fold-averaged feature importance, and MLP Kernel SHAP. Full SHAP attribution can take materially longer than the performance evaluation.
+
+### 3. Quick smoke test with synthetic data
+
+Synthetic data contains no real patient information. Its performance metrics have **no clinical meaning**.
 
 ```bash
-python run_pipeline.py --data data/TBI_final.csv --output results/
-python run_pipeline.py --data data/TBI_final.csv --feature-sets Radiomics      # one feature set
-python scripts/compare_with_reference.py results/results_pca95.csv      # check against reference results
-python scripts/make_results_figure.py results/results_pca95.csv assets/auc_summary.png
+python scripts/make_synthetic_data.py --out data/synthetic_example.csv
+python run_pipeline.py \
+  --data data/synthetic_example.csv \
+  --output results/demo \
+  --bootstrap 100 \
+  --skip-shap
 ```
 
-| Output (`results/`) | Content |
+`--skip-shap` skips the MLP SHAP/refit phase for a faster demo; it still runs the 12-model CV evaluation, bootstrap intervals, DeLong comparisons, and tree-based source-feature importance. Omit `--skip-shap` for the complete interpretability workflow.
+
+### Command-line options
+
+| Option | Default | Purpose |
+|---|---:|---|
+| `--data` | `data/TBI_final_corrected.csv` | Input cohort CSV |
+| `--output` | `results` | Output directory |
+| `--random-state` | `42` | Reproducibility seed |
+| `--n-splits` | `5` | Stratified CV folds (at least 2) |
+| `--pca-variance` | `0.95` | PCA variance retained (strictly between 0 and 1) |
+| `--bootstrap` | `2000` | Stratified bootstrap replicates |
+| `--shap-nsamples` | `100` | Kernel SHAP approximation budget per explained case |
+| `--shap-background-size` | `10` | Training-fold cases in the SHAP background |
+| `--top-n-features` | `20` | Number of features in importance plots |
+| `--skip-shap` | off | Skip MLP SHAP for quicker smoke tests |
+
+Run `python run_pipeline.py --help` for the full command-line help.
+
+### Google Colab
+
+The original one-cell notebook was retained at [`notebooks/TBI_colab_one_cell_pipeline.ipynb`](notebooks/TBI_colab_one_cell_pipeline.ipynb). Open it in Colab, provide the authorized CSV (default notebook path: `/content/TBI_final_corrected.csv`), and run its single code cell. The notebook installs missing/old dependencies and can prompt for a CSV upload if it is not found.
+
+## Outputs
+
+A full run writes the following to the chosen `--output` directory:
+
+| File | Purpose |
 |---|---|
-| `results_pca95.csv` | All metrics, confusion-matrix counts and PCA components per fold (12 rows) |
-| `table_radiomics.csv` · `table_clinical.csv` · `table_combined.csv` | Manuscript-style tables |
-| `figures/ROC_*.png` · `figures/CM_*.png` | ROC curves per feature set; 12 confusion matrices |
-| `run_metadata.json` | Seeds, library versions, dropped columns, feature-set sizes |
+| `results_pca95_with_bootstrap_ci.csv` | Twelve model/feature-set rows with metrics, 95% CI bounds, confusion-matrix counts, and PCA components per fold |
+| `metric_bootstrap_cis_long.csv` | Long-form metric/CI table for plotting or further analysis |
+| `table_radiomics_with_95CI.csv`, `table_clinical_with_95CI.csv`, `table_combined_with_95CI.csv` | Manuscript-style metrics with bootstrap intervals |
+| `pooled_oof_predictions.csv` | Per-case held-out probabilities and labels; keep local in the approved environment and do not commit if restricted |
+| `delong_pairwise_all_models.csv` | All 66 DeLong comparisons and global/focused Holm-adjusted p-values |
+| `delong_comparisons_within_feature_set.csv` | Classifier comparisons within each feature set |
+| `delong_comparisons_between_feature_sets.csv` | Feature-set comparisons within each classifier |
+| `delong_auc_difference_matrix.csv` | Matrix of AUC differences |
+| `backmapped_feature_importance_by_fold.csv` | Fold-level feature attributions / importances |
+| `backmapped_feature_importance_mean_across_folds.csv` | Fold-averaged source-feature importance with variability columns |
+| `mlp_shap_pca_space_oof_attributions.csv` | MLP Kernel SHAP values in the PCA component space |
+| `mlp_shap_backmapped_oof_attributions.csv` | Approximate back-projected MLP SHAP values; not exact raw-feature SHAP |
+| `run_metadata.json` | Settings, versions, cleaning decisions, CV/PCA details and interpretation caveats |
+| `figures/` | AUC/CI summary, ROC curves, confusion matrices, feature-importance plots, SHAP summaries and DeLong heatmap |
 
-## Repository layout
+Per-case outputs may contain sensitive derived health information. They are excluded from the committed reference output directory and are ignored by Git patterns where appropriate. Follow your institution's data governance rules before moving or sharing generated results.
 
-```
-run_pipeline.py            entry point
-tbi_pipeline/
-  config.py                seeds, CV, PCA variance, exclusion rules
-  data.py                  loading, target normalisation, cleaning
-  features.py              radiomics / clinical / combined split
-  pipeline.py              models + leakage-safe pipeline
-  evaluation.py            stratified CV, pooled out-of-fold metrics
-  plots.py                 ROC curves, confusion matrices
-scripts/                   synthetic data generator, results figure
-reference_results/         final model results: metrics, tables, confusion matrices
-  supplementary_statistics/  baseline and chi-square tables (secondary)
-tests/                     pytest smoke tests (run in CI)
-assets/                    README figures
-data/README.md             data availability and expected schema
-```
+## Continuous integration
+
+GitHub Actions runs on pushes and pull requests. It installs requirements, runs the unit tests (including tests for bootstrap intervals, DeLong calculations, Holm correction and PCA-loading normalization), generates synthetic data, then runs the full 12-configuration smoke workflow with `--skip-shap` and verifies the expected aggregate artifacts. The expensive MLP Kernel SHAP pass is tested at helper level and is run in full when the pipeline is executed without `--skip-shap`.
+
+Workflow definition: [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
 
 ## Data availability
 
-The de-identified dataset derives from identifiable clinical imaging and is governed by the data-protection policy of Hamadan University of Medical Sciences; it is **not included**. It is available from the corresponding author (Mahdi Arjipour) on reasonable request. The expected input format is described in [`data/README.md`](data/README.md), and the synthetic generator reproduces that schema so the code can be tested end to end. Aggregate results are in [`reference_results/`](reference_results/).
+The cohort CSV (`TBI_final_corrected.csv` or a compatible file) contains patient-level information and is **not distributed**. Use data only with the required institutional approvals and access controls. See [`data/README.md`](data/README.md) for column expectations and cleaning rules.
 
-**Ethics:** approved by the Ethics Committee of Hamadan University of Medical Sciences (IR.UMSHA.REC.1404.612); informed consent was obtained; data were anonymised before analysis.
+The pipeline excludes patient identifiers, timestamps, surgery/outcome/mortality/ICU-stay variables, and control-CT/follow-up fields to reduce identity and target leakage risk. Review the exclusion rules in the source before adapting the code to a different dataset. Automatic cleaning does not substitute for clinical/data-governance review.
 
-## Reproducibility
+## Limitations and intended use
 
-Library versions of each run are written to `results/run_metadata.json`. Small numerical differences across platforms and versions are possible (XGBoost, MLP), so compare with `reference_results/` using a small tolerance. Because the classifiers see principal components, feature-level importance is not reported. The univariate chi-square outputs are supplied as reference tables; this repository's code covers the machine-learning analysis. Running this code on the dataset used for the paper reproduced the reference metrics of the Random Forest, Gradient Boosting and MLP models exactly (identical confusion matrices; scikit-learn 1.8.0, Python 3.12); `scripts/compare_with_reference.py` repeats this check for all 12 models.
+This is an internal cross-validation analysis of a small, single-centre cohort. The percentile bootstrap holds the OOF prediction pairs fixed and therefore does not capture all sources of model-training uncertainty. DeLong p-values are approximate in this cross-validation setting because fitted models across folds share overlapping training data. Model tuning was not performed, and the attribution back-projection method is approximate. Independent external validation, prospective evaluation, and methodological review are needed before any clinical interpretation or use.
 
-## Limitations
-
-Single-centre cohort of 86 patients with 107 radiomic features (overfitting risk despite PCA and cross-validation); internal validation only; no confidence intervals; one CV partition and seed; fixed, untuned hyper-parameters; semi-automatic, operator-dependent segmentation; CT acquisition differences can shift radiomic features. **This software is a research prototype, not a medical device, and must not be used for clinical decisions.**
+**This repository is a research prototype, not a medical device. It must not be used to make clinical decisions.**
 
 ## Citation
 
-Please cite the paper and this repository (see [`CITATION.cff`](CITATION.cff)):
-
-Haghani, A., Arjipour, M., & Ownagh, F. (2026). TBI hemorrhage-expansion prediction pipeline: PCA-based radiomic, clinical and combined models (Version v1.0.1) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.23166853
-
+Please cite the relevant manuscript and repository. Repository citation metadata is in [`CITATION.cff`](CITATION.cff). When publishing this updated code version, create/update the archived software release record so the DOI points to the exact version used.
 
 ## License and contact
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Developer: **Haghani, Amirreza, MD**, Faculty of Medicine, Hamadan University of Medical Sciences, Hamadan, Iran · [haghaniamirreza0@gmail.com](mailto:haghaniamirreza0@gmail.com). Issues and pull requests are welcome.
-
-**Acknowledgements:** the neurosurgical and radiology teams at Besat Hospital. No external funding.
+MIT License; see [`LICENSE`](LICENSE). Issues and pull requests are welcome. Project maintainer/contact details are listed in [`CITATION.cff`](CITATION.cff) and the repository's existing project metadata.

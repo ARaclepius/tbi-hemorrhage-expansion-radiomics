@@ -1,25 +1,7 @@
-# Reference results
+# Reference outputs
 
-Fixed outputs of the final analysis (PCA 95% models, 5-fold stratified CV, n = 86).
-Aggregate numbers only - no patient-level data.
+`results_pca95.csv`, the original tables, confusion matrices and supplementary statistics retain the baseline results that shipped with v1.x.
 
-## Model results (main content)
+The enhanced pipeline's aggregate outputs from the supplied 86-patient run are in [`ci_interpretability/`](ci_interpretability/). They include pooled OOF point estimates with stratified-bootstrap 95% CIs, DeLong comparisons with Holm correction, feature-importance aggregates and generated figures. Per-patient OOF predictions and case-level SHAP CSVs are deliberately not included here.
 
-| Path | Content |
-|---|---|
-| `results_pca95.csv` | All 12 models (3 feature sets × 4 classifiers): AUC, PR-AUC, accuracy, F1, sensitivity, specificity, PPV, NPV, balanced accuracy, confusion-matrix counts, mean PCA components |
-| `tables/table_radiomics.csv` · `table_clinical.csv` · `table_combined.csv` | Manuscript-style performance tables (percent) |
-| `figures/CM_*.png` | The 12 pooled out-of-fold confusion matrices |
-
-`python run_pipeline.py` regenerates the same files in `results/`, including ROC curves.
-To check that your run matches this reference:
-
-```bash
-python scripts/compare_with_reference.py results/results_pca95.csv
-```
-
-## Supplementary (secondary)
-
-`supplementary_statistics/` holds the univariate baseline and chi-square tables of the
-clinical study. They are provided for transparency only; the code in this repository
-covers the machine-learning analysis, not these tests.
+The confidence intervals are conditional on the pooled OOF prediction pairs. The paired DeLong analyses are exploratory because cross-validation training sets overlap. See the top-level README for methods, interpretability caveats and instructions for reproducing the outputs.
