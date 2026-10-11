@@ -9,7 +9,7 @@
 [![Tests](https://img.shields.io/badge/tests-pytest-success)](tests/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Version](https://img.shields.io/badge/version-v1.2.0-blue)](CHANGELOG.md)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23166853.svg)](https://doi.org/10.5281/zenodo.23290524)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23290524.svg)](https://doi.org/10.5281/zenodo.23290524)
 
 **[Study](#study-overview) · [What’s new in v1.2.0](#whats-new-in-v120) · [Results](#results-with-95-confidence-intervals) · [Pipeline](#analysis-pipeline) · [Run it](#quick-start) · [Outputs](#outputs) · [Data](#data-availability) · [Citation](#citation)
 
