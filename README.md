@@ -9,7 +9,7 @@
 [![Tests](https://img.shields.io/badge/tests-pytest-success)](tests/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Version](https://img.shields.io/badge/version-v1.2.0-blue)](CHANGELOG.md)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23166853.svg)](https://doi.org/10.5281/zenodo.23166853)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23166853.svg)](https://doi.org/10.5281/zenodo.23290524)
 
 **[Study](#study-overview) · [What’s new in v1.2.0](#whats-new-in-v120) · [Results](#results-with-95-confidence-intervals) · [Pipeline](#analysis-pipeline) · [Run it](#quick-start) · [Outputs](#outputs) · [Data](#data-availability) · [Citation](#citation)
 
@@ -216,7 +216,7 @@ This is an internal cross-validation analysis of a small, single-centre cohort. 
 
 Please cite the manuscript and this software repository (see [`CITATION.cff`](CITATION.cff)). The existing DOI has been **preserved exactly as requested** in the badge, citation metadata, and reference below:
 
-Haghani, A., Arjipour, M., & Ownagh, F. (2026). *TBI hemorrhage-expansion prediction pipeline: PCA-based radiomic, clinical and combined models* (Version v1.2.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.23166853
+Haghani, A., Arjipour, M., & Ownagh, F. (2026). *TBI hemorrhage-expansion prediction pipeline: PCA-based radiomic, clinical and combined models* (Version v1.2.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.23290524
 
 ## License and contact
 
